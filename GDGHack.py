@@ -3,43 +3,40 @@
 
 # In[26]:
 
-
-import requests
-from bs4 import BeautifulSoup
-import re
-
-
-# In[39]:
+def getdetailsmudge:
+  
+  import requests
+  from bs4 import BeautifulSoup
+  import re
 
 
-URL = "https://twitter.com/home/"
-page = requests.get(URL)
-
-soup = BeautifulSoup(page.content, "html.parser")
-
-t_soup = [s.get_text() for s in soup.find_all(lambda tag: tag.name == 'div' and 
-                                   tag.get('class') == ['product'])]
-
-tweets = '\n'.join(t_soup)
-print(tweets)
 
 
-# In[28]:
+  URL = "https://twitter.com/"
+  page = requests.get(URL)
+
+  soup = BeautifulSoup(page.content, "html.parser")
 
 
-searched_word = input('cellphone / email ')
+  searched_input = input('cellphone / email / Twitter handle')
 
 
-# In[32]:
+
+  results = soup.body.find_all(string=re.compile('.*{0}.*'.format(searched_input)), recursive=True)
+
+  print( 'Found the word "{0}" {1} times\n'.format(searched_input, len(results)))
+  
+  if len(results) > 0:
+    answer = input('Do you want to keep your data visible?  Y/N')
+    if answer == 'N':
+      for item in searched_input:
+        searched_input = item[:1] + '*********'
+    else:
+      print('It is not safe to keep your personal data visible)
+      
 
 
-results = soup.body.find_all(string=re.compile('.*{0}.*'.format(searched_word)), recursive=True)
-
-print( 'Found the word "{0}" {1} times\n'.format(searched_word, len(results)))
+  
 
 
-# In[33]:
-
-
-print(results.prettify())
 
